@@ -6,6 +6,20 @@ jobs:
   database-migration-ci:
     name: A job to spin up a Postgres service and migrate it.
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: c16bc0af8840ef353a2a51e06b9ef568
+          POSTGRES_DB: earthly_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     steps:
       - name: Checkout repository
         uses: actions/checkout@v1
@@ -20,17 +34,4 @@ jobs:
         shell: bash
 
 
-services:
-    postgres:
-      image: postgres:15
-      env:
-        POSTGRES_USER: root
-        POSTGRES_PASSWORD: c16bc0af8840ef353a2a51e06b9ef568
-        POSTGRES_DB: earthly_db
-      options: >-
-        --health-cmd pg_isready
-        --health-interval 10s
-        --health-timeout 5s
-        --health-retries 5
-      ports:
-        - 5432:5432
+
